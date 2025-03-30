@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
 		if (WIFEXITED(wstatus))
 			break;
-		if (WIFSTOPPED(wstatus) && WSTOPSIG(wstatus) == SIGTRAP) {
+		if (WIFSTOPPED(wstatus) && (WSTOPSIG(wstatus) == SIGTRAP)) {
 			icount++;
 			if(ptrace(PTRACE_SINGLESTEP, pid, NULL, NULL))
 				die("ptrace");

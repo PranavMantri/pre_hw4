@@ -1,18 +1,38 @@
+# Compiler and flags
 CC = gcc
-CFLAGS = -g -Wall
-LDFLAGS = -static
+CFLAGS = -Wall -Wextra -g
+LFLAGS = -nostdlib -nodefaultlibs -static
 
+# Targets
+TARGETS = icount child_test
 
-top: child_test icount
-child_test: child_test.o
-icount: icount.o
+# Source files for each target
+ICOUNT_SRCS = icount.c 
+CHILD_TEST_SRCS = child_test.c
 
+# Object files for each target
+ICOUNT_OBJS = $(ICOUNT_SRCS:.c=.o)
+CHILD_TEST_OBJS = $(CHILD_TEST_SRCS:.c=.o)
 
+# Default target to build both programs
+all: $(TARGETS)
 
-.PHONY: clean
+# Build icount
+icount: $(ICOUNT_OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+# Build child_test
+child_test: $(CHILD_TEST_OBJS)
+	$(CC) $(CFLAGS) $(LFLAGS) -o $@ $^
+
+# Compiling individual source files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean up build files
 clean:
-	rm ./*.o icount
+	rm -f $(ICOUNT_OBJS) $(CHILD_TEST_OBJS) $(TARGETS)
 
+# Phony targets to avoid conflict with files named 'clean' or 'all'
+.PHONY: all clean
 
-.PHONY: all
-all: clean top
